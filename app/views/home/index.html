@@ -1,77 +1,72 @@
-{% extends "base.html" %}
-{% block title %}Shipy — One-Box, Python + HTMX + SQLite. Ship Daily.{% endblock %}
-{% block head %}
-  {{ super() }}
-  <meta
-    name="description"
-    content="Opinionated micro-framework to ship indie apps fast: Python backend, HTMX front, SQLite, zero build, one-box deploy."
-  />
-  <link rel="canonical" href="https://shipy.rafaelviana.com/" />
-{% endblock %}
-{% block content %}
-    <header class="stack" style="padding: 24px">
-      <h1>Shipy</h1>
-      <p>
-        One-box, Python + HTMX + SQLite. <strong>Ship daily</strong> without the
-        JS circus.
-      </p>
-      <div class="row" style="gap: 12px">
-        <a class="btn" href="/docs/get-started">Get Started</a>
-        <a
-          class="btn"
-          href="https://github.com/<your-user>/shipy"
-          target="_blank"
-          rel="noopener"
-          >GitHub</a
-        >
-        <a class="btn" href="/docs/tutorials/todo">Build the Todo App →</a>
-      </div>
-    </header>
+{% extends "base.html" %} {% block title %}Shipy — One-Box, Python + HTMX +
+SQLite. Ship Daily.{% endblock %} {% block head %} {{ super() }}
+<meta
+  name="description"
+  content="Opinionated micro-framework to ship indie apps fast: Python backend, HTMX front, SQLite, zero build, one-box deploy."
+/>
+<link rel="canonical" href="https://shipy.rafaelviana.com/" />
+{% endblock %} {% block content %}
+<header class="stack" style="padding: 24px">
+  <h1>Shipy</h1>
+  <p>
+    One-box, Python + HTMX + SQLite. <strong>Ship daily</strong> without the JS
+    circus.
+  </p>
+  <div class="row" style="gap: 12px">
+    <a class="btn" href="/docs/get-started">Get Started</a>
+    <a
+      class="btn"
+      href="https://github.com/vianarafael/shipy"
+      target="_blank"
+      rel="noopener"
+      >GitHub</a
+    >
+    <a class="btn" href="/docs/tutorials/todo">Build the Todo App →</a>
+  </div>
+</header>
 
-    <section class="grid" style="padding: 24px; gap: 24px">
-      <div class="card">
-        <h2>Why Shipy?</h2>
-        <ul>
-          <li>Zero build chain. Server-rendered HTML + HTMX sprinkles.</li>
-          <li>SQLite first. Raw SQL until you <em>earn</em> an ORM.</li>
-          <li>Auth, sessions, CSRF, forms—batteries included.</li>
-          <li>Deploy on a $12 VPS with systemd + Nginx.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h2>What you’ll ship in 30 minutes</h2>
-        <p>Signup/Login → CRUD → HTMX toggle → Deploy.</p>
-        <a class="btn" href="/docs/tutorials/todo">Open the Tutorial</a>
-      </div>
-      <div class="card">
-        <h2>Philosophy</h2>
-        <ul>
-          <li>
-            Default to HTML + forms + cookies + sessions + CSRF. Earn your JS.
-          </li>
-          <li>One box, one repo, one brain. Earn complexity.</li>
-          <li>Freedom is the KPI: time, location, mind.</li>
-        </ul>
-        <a class="btn" href="/docs/manifesto">Read the Manifesto</a>
-      </div>
-    </section>
+<section class="grid" style="padding: 24px; gap: 24px">
+  <div class="card">
+    <h2>Why Shipy?</h2>
+    <ul>
+      <li>Zero build chain. Server-rendered HTML + HTMX sprinkles.</li>
+      <li>SQLite first. Raw SQL until you <em>earn</em> an ORM.</li>
+      <li>Auth, sessions, CSRF, forms—batteries included.</li>
+      <li>Deploy on a $12 VPS with systemd + Nginx.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>What you’ll ship in 30 minutes</h2>
+    <p>Signup/Login → CRUD → HTMX toggle → Deploy.</p>
+    <a class="btn" href="/docs/tutorials/todo">Open the Tutorial</a>
+  </div>
+  <div class="card">
+    <h2>Philosophy</h2>
+    <ul>
+      <li>
+        Default to HTML + forms + cookies + sessions + CSRF. Earn your JS.
+      </li>
+      <li>One box, one repo, one brain. Earn complexity.</li>
+      <li>Freedom is the KPI: time, location, mind.</li>
+    </ul>
+    <a class="btn" href="/docs/manifesto">Read the Manifesto</a>
+  </div>
+</section>
 
-    <section class="stack" style="padding: 24px">
-      <h2>Quickstart</h2>
-      <pre><code># Create app
+<section class="stack" style="padding: 24px">
+  <h2>Quickstart</h2>
+  <pre><code># Create app
 python -m venv .venv && source .venv/bin/activate
 pip install shipy-web
 shipy new demo && cd demo
 shipy db init
 shipy dev  # http://localhost:8000
 </code></pre>
-      <p>
-        Next: <a href="/docs/tutorials/todo">Build the Todo app with auth →</a>
-      </p>
-    </section>
+  <p>Next: <a href="/docs/tutorials/todo">Build the Todo app with auth →</a></p>
+</section>
 
-    <footer class="muted" style="padding: 24px">
-      MIT Licensed.
-      <a href="https://github.com/vianarafael/shipy">Contribute</a> ·
-    </footer>
+<footer class="muted" style="padding: 24px">
+  MIT Licensed.
+  <a href="https://github.com/vianarafael/shipy">Contribute</a> ·
+</footer>
 {% endblock %}
