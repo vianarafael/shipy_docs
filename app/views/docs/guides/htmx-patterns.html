@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}HTMX Patterns · Shipy{% endblock %}
+{% block head %}
+  {{ super() }}
+  <meta name="description" content="Common HTMX patterns with Shipy: partials, swaps, forms, and redirects." />
+{% endblock %}
+{% block content %}
+  <header class="page-header wrap">
+    <h1 class="page-title">HTMX Patterns</h1>
+    <p class="muted">Snippets and guidance for common HTMX flows.</p>
+  </header>
+  <main class="wrap">
+    <section class="card">
+      <h2>Form POST with CSRF</h2>
+      <pre><code>&lt;form hx-post="/path" hx-vals='{"csrf":"{{ csrf }}"}' hx-target="#result" hx-swap="outerHTML"&gt;...&lt;/form&gt;</code></pre>
+    </section>
+    <section class="card">
+      <h2>Partial Rendering</h2>
+      <pre><code>{% raw %}return render_htmx(req, "todos/list.html", todos=todos){% endraw %}</code></pre>
+    </section>
+  </main>
+{% endblock %}

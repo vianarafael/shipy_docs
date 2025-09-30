@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Install · Shipy{% endblock %}
+{% block head %}
+  {{ super() }}
+  <meta name="description" content="Install Shipy and set up your environment." />
+{% endblock %}
+{% block content %}
+  <header class="page-header wrap">
+    <h1 class="page-title">Install</h1>
+    <p class="muted">Set up Python, virtualenv, and Shipy.</p>
+  </header>
+  <main class="wrap">
+    <section class="card">
+      <h2>Requirements</h2>
+      <ul>
+        <li>Python 3.11+</li>
+        <li>sqlite3 available on your system</li>
+      </ul>
+    </section>
+    <section class="card">
+      <h2>Install Shipy</h2>
+      <pre><code>python -m venv .venv
+source .venv/bin/activate
+pip install shipy-web</code></pre>
+    </section>
+    <section class="card">
+      <h2>Next</h2>
+      <ul>
+        <li><a href="/docs/get-started">Back to Get Started</a></li>
+        <li><a href="/docs/tutorials/todo">Build the Todo app</a></li>
+      </ul>
+    </section>
+  </main>
+{% endblock %}

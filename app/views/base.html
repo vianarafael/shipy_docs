@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Shipy{% endblock %}</title>
+    <link rel="stylesheet" href="/public/base.css" />
+    <link rel="stylesheet" href="/public/docs.css" />
+    <link rel="icon" href="/public/favicon.svg" type="image/svg+xml" />
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    {% block content %}{% endblock %}
+  </body>
+  {% block scripts %}{% endblock %}
+</html>

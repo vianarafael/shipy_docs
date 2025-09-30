@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Get Started · Shipy{% endblock %}
+{% block head %}
+  {{ super() }}
+  <meta name="description" content="Get started with Shipy: install, scaffold, run the dev server, and build your first feature." />
+{% endblock %}
+{% block content %}
+  <header class="page-header wrap">
+    <h1 class="page-title">Get Started</h1>
+    <p class="muted">Install, scaffold, and run your first Shipy app.</p>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h2>Install</h2>
+      <pre><code>python -m venv .venv
+source .venv/bin/activate
+pip install shipy-web</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>Scaffold</h2>
+      <pre><code>shipy new demo
+cd demo
+shipy db init
+shipy dev  # http://localhost:8000</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>Next steps</h2>
+      <ul>
+        <li><a href="/docs/tutorials/todo">Build the Todo app with auth</a></li>
+        <li><a href="/docs/manifesto">Read the Shipy Manifesto</a></li>
+      </ul>
+    </section>
+  </main>
+{% endblock %}

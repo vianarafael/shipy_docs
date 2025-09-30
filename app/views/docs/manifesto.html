@@ -1,0 +1,148 @@
+{% extends "base.html" %} {% block title %}Shipy Manifesto · Freedom by
+Simplicity{% endblock %} {% block head %} {{ super() }}
+<meta
+  name="description"
+  content="Shipy Manifesto: opinionated simplicity for indie speed. One box, Python, HTMX, SQLite. Freedom is the KPI."
+/>
+{% endblock %} {% block content %}
+<header class="page-header">
+  <h1 class="page-title">Shipy Manifesto</h1>
+  <p class="muted">
+    Opinionated enough to erase decision fatigue. Simple enough to outlive hype.
+    Freedom is the KPI.
+  </p>
+</header>
+
+<nav class="card" aria-label="On this page" style="margin: 1rem 0">
+  <strong>On this page</strong>
+  <ul style="margin: 0.5rem 0 0 1rem">
+    <li><a href="#principles">Principles</a></li>
+    <li><a href="#defaults">Default Stack</a></li>
+    <li><a href="#why-one-box">Why One Box</a></li>
+    <li><a href="#non-goals">Non-Goals</a></li>
+    <li><a href="#design-promises">Design Promises</a></li>
+    <li><a href="#next">What to Do Next</a></li>
+  </ul>
+</nav>
+
+<section id="principles" class="card">
+  <h2>Principles</h2>
+  <ol>
+    <li><strong>Ship over polish.</strong> Today beats never.</li>
+    <li>
+      <strong>One box, one repo, one brain.</strong> Start simple; earn your
+      complexity.
+    </li>
+    <li>
+      <strong>Boring on purpose.</strong> Python, HTMX, SQLite, systemd, Nginx.
+    </li>
+    <li>
+      <strong>Start with explicit SQL.</strong> Add helpers/ORM only when the
+      problem demands it.
+    </li>
+    <li>
+      <strong>Convention over configuration.</strong> Defaults that push you to
+      done.
+    </li>
+    <li>
+      <strong>Zero build chain.</strong> Earn your JS; avoid tool jungles by
+      default.
+    </li>
+    <li>
+      <strong>The common web is first-class.</strong> HTML, forms,
+      POST/redirect, cookies, sessions, CSRF.
+    </li>
+    <li>
+      <strong>Measure, don’t mythologize.</strong> Logs, timings, error counts >
+      vibes.
+    </li>
+    <li>
+      <strong>Freedom is the KPI.</strong> If a choice reduces
+      time/location/mind freedom, it’s wrong.
+    </li>
+  </ol>
+</section>
+
+<section id="defaults" class="card">
+  <h2>Default Stack</h2>
+  <ul>
+    <li><strong>Backend:</strong> Python (dynamic, no Pydantic ceremony)</li>
+    <li><strong>Views:</strong> Jinja2 + HTMX (progressive enhancement)</li>
+    <li><strong>Data:</strong> SQLite (FTS5 when needed)</li>
+    <li>
+      <strong>Auth:</strong> Signed-cookie sessions, @login_required, CSRF baked
+      in
+    </li>
+    <li><strong>Ops:</strong> systemd + Nginx on a modest VPS</li>
+  </ul>
+  <p class="muted">
+    Everything else is optional and must be earned by real constraints.
+  </p>
+</section>
+
+<section id="why-one-box" class="card">
+  <h2>Why One Box</h2>
+  <ul>
+    <li>
+      <strong>Fewer moving parts.</strong> Fewer failure modes and decisions.
+    </li>
+    <li>
+      <strong>Time-to-URL in hours.</strong> From concept to deploy without
+      infra theater.
+    </li>
+    <li>
+      <strong>Fits in your head.</strong> Cognitive load goes to users, not
+      plumbing.
+    </li>
+  </ul>
+</section>
+
+<section id="non-goals" class="card">
+  <h2>Non-Goals</h2>
+  <ul>
+    <li>Not a microservices framework.</li>
+    <li>Not a SPA scaffold or build-tool playground.</li>
+    <li>Not a “choose-everything” kitchen sink.</li>
+  </ul>
+</section>
+
+<section id="design-promises" class="card">
+  <h2>Design Promises</h2>
+  <ul>
+    <li>
+      <strong>Stable defaults.</strong> Sensible structure, auth, CSRF, forms.
+    </li>
+    <li>
+      <strong>Copy-paste wins.</strong> Tutorials and examples that run on first
+      try.
+    </li>
+    <li>
+      <strong>Escape hatches.</strong> You can drop to raw SQL, plain HTML, or
+      add libs without a fight.
+    </li>
+    <li>
+      <strong>Dogfooding.</strong> Real apps run on Shipy; incidents improve the
+      defaults.
+    </li>
+    <li>
+      <strong>Upgrades you can trust.</strong> Tagged releases, notes, and a
+      deprecation path.
+    </li>
+  </ul>
+</section>
+
+<section id="next" class="card">
+  <h2>What to Do Next</h2>
+  <div class="stack">
+    <a class="btn" href="/docs/get-started/install">Get Started → Install</a>
+    <a class="btn" href="/docs/tutorials/todo"
+      >Build your first app → Todo with Auth</a
+    >
+    <a class="btn" href="/docs/guides/htmx-patterns">Learn HTMX patterns</a>
+  </div>
+  <p class="muted" style="margin-top: 0.75rem">
+    Prefer contributing? See <a href="/docs/contributing">Contributing</a> and
+    “Good first issues” on GitHub.
+  </p>
+</section>
+{% endblock %}

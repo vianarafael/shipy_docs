@@ -1,0 +1,54 @@
+{% extends "base.html" %} {% block title %}Tutorials · Shipy{% endblock %} {%
+block head %} {{ super() }}
+<meta
+  name="description"
+  content="Outcome-driven Shipy tutorials. Build real features fast: auth, HTMX CRUD, deploy, and more."
+/>
+{% endblock %} {% block content %}
+<header class="page-header">
+  <h1 class="page-title">Tutorials</h1>
+  <p class="muted">
+    Outcome-driven, copy-paste guides. Ship something visible in under an hour.
+  </p>
+</header>
+
+<section class="stack" style="margin-top: 1rem">
+  <!-- Tutorials list -->
+  <article class="card">
+    <h2 style="margin: 0 0 0.25rem 0">
+      <a href="/docs/tutorials/todo"
+        >Build a Production-Ready Todo App with Auth</a
+      >
+    </h2>
+    <p class="muted" style="margin: 0 0 0.5rem 0">
+      Beginner · Python + HTMX + SQLite · Auth · CSRF · Deploy
+    </p>
+    <a class="btn" href="/docs/tutorials/todo">Start tutorial →</a>
+  </article>
+
+  <!-- Future tutorials (uncomment as you add pages) -->
+  {#
+  <article class="card">
+    <h2>
+      <a href="/docs/tutorials/stripe-stub"
+        >Accept Payments with a Stripe Stub</a
+      >
+    </h2>
+    <p class="muted">
+      Beginner · Test → Webhook → Live · Gate features with is_pro
+    </p>
+    <a class="btn" href="/docs/tutorials/stripe-stub">Start tutorial →</a>
+  </article>
+
+  <article class="card">
+    <h2>
+      <a href="/docs/tutorials/file-uploader-ai">File Uploader → AI Summary</a>
+    </h2>
+    <p class="muted">
+      Intermediate · Uploads, size limits, async job, summary view
+    </p>
+    <a class="btn" href="/docs/tutorials/file-uploader-ai">Start tutorial →</a>
+  </article>
+  #}
+</section>
+{% endblock %}

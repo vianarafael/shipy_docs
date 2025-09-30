@@ -1,0 +1,36 @@
+__pycache__/
+*.pyc
+.env
+data/*.db*
+.DS_Store
+# Python build artifacts
+*.pyo
+*.pyd
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Env and secrets
+.env.*
+.envrc
+
+# Test/coverage caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Tooling/IDE
+.vscode/
+.idea/
+.history
+*.log
+Thumbs.db

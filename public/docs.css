@@ -1,0 +1,59 @@
+:root {
+  --border: #1f2430;
+  --code-bg: #0f1115;
+  --code-border: #1b2030;
+  --kbd-bg: #151923;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --border: #e5e7eb;
+    --code-bg: #0f1115;
+    --code-border: #1b2030;
+    --kbd-bg: #eaeef7;
+  }
+}
+
+/* Layout */
+.page-header {
+  padding: 24px 0 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.page-title {
+  margin: 0 0 0.25rem 0;
+  font-size: 28px;
+  line-height: 1.25;
+}
+.muted { color: var(--muted); }
+.row { display: flex; align-items: center; gap: 8px; }
+.grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 840px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+.stack { display: grid; gap: 12px; }
+
+/* Cards, buttons */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.btn { border: 1px solid var(--border); }
+
+/* Code blocks */
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  padding: 14px;
+  border-radius: 12px;
+  overflow: auto;
+}
+pre code { color: #e2e8f0; font-size: 13.5px; }
+code, kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+kbd { background: var(--kbd-bg); border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 6px; padding: 0 6px; font-size: 12px; }
+
+/* Anchors that appear on heading hover */
+.anchor { opacity: 0; margin-left: 6px; font-weight: 400; }
+h2:hover .anchor, h3:hover .anchor { opacity: 1; }
+
+/* Table of contents */
+.toc { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin: 16px 0 24px; }
+

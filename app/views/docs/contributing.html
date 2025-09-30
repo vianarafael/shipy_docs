@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Contributing · Shipy{% endblock %}
+{% block head %}
+  {{ super() }}
+  <meta name="description" content="How to contribute to Shipy: issues, PRs, and development setup." />
+{% endblock %}
+{% block content %}
+  <header class="page-header wrap">
+    <h1 class="page-title">Contributing</h1>
+    <p class="muted">Issues, pull requests, and dev setup.</p>
+  </header>
+  <main class="wrap">
+    <section class="card">
+      <h2>Getting Started</h2>
+      <ul>
+        <li>Fork the repo</li>
+        <li>Create a feature branch</li>
+        <li>Open a PR with a clear description</li>
+      </ul>
+    </section>
+    <section class="card">
+      <h2>Local Dev</h2>
+      <pre><code>python -m venv .venv
+source .venv/bin/activate
+pip install -e .  # if working in Shipy repo
+shipy dev</code></pre>
+    </section>
+  </main>
+{% endblock %}

@@ -1,0 +1,820 @@
+{% extends "base.html" %}
+{% block title %}Build a Production-Ready Todo App with Auth in Shipy{% endblock %}
+{% block head %}
+  {{ super() }}
+  <meta name="description" content="Step-by-step tutorial to build a production-ready Todo app with auth using Shipy (Python + HTMX + SQLite), including CSRF, error handling, and deploy." />
+  <style>
+      :root {
+        --bg: #0b0c0f;
+        --card: #12141a;
+        --muted: #9aa3b2;
+        --text: #e7ecf3;
+        --accent: #5eead4;
+        --border: #1f2430;
+        --code-bg: #0f1115;
+        --code-border: #1b2030;
+        --kbd-bg: #151923;
+        --red: #ef4444;
+        --green: #22c55e;
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #ffffff;
+          --card: #f7f8fb;
+          --muted: #475569;
+          --text: #101827;
+          --accent: #0ea5e9;
+          --border: #e5e7eb;
+          --code-bg: #0f1115;
+          --code-border: #1b2030;
+          --kbd-bg: #eaeef7;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial,
+          sans-serif;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      header {
+        padding: 28px 20px 8px;
+        border-bottom: 1px solid var(--border);
+      }
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 16px;
+      }
+      h1 {
+        font-size: 30px;
+        line-height: 1.25;
+        margin: 6px 0 10px;
+      }
+      h2 {
+        font-size: 22px;
+        margin-top: 32px;
+        border-top: 1px solid var(--border);
+        padding-top: 24px;
+      }
+      h3 {
+        font-size: 18px;
+        margin-top: 20px;
+      }
+      p {
+        margin: 10px 0 14px;
+      }
+      ul,
+      ol {
+        margin: 8px 0 16px 22px;
+      }
+      li {
+        margin: 6px 0;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .note {
+        background: var(--card);
+        border: 1px solid var(--border);
+        padding: 12px 14px;
+        border-radius: 10px;
+        margin: 14px 0;
+      }
+      .stack {
+        display: grid;
+        gap: 12px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px 16px;
+      }
+      .toc {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin: 16px 0 24px;
+      }
+      code,
+      pre,
+      kbd {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas,
+          "Liberation Mono", monospace;
+      }
+      pre {
+        background: var(--code-bg);
+        border: 1px solid var(--code-border);
+        padding: 14px;
+        border-radius: 12px;
+        overflow: auto;
+        position: relative;
+      }
+      pre code {
+        color: #e2e8f0;
+        font-size: 13.5px;
+      }
+      kbd {
+        background: var(--kbd-bg);
+        border: 1px solid var(--border);
+        border-bottom-width: 2px;
+        border-radius: 6px;
+        padding: 0 6px;
+        font-size: 12px;
+      }
+      .lang {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .copy {
+        position: absolute;
+        top: 8px;
+        right: 52px;
+        font-size: 12px;
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 4px 8px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .ok {
+        color: var(--green);
+      }
+      .err {
+        color: var(--red);
+      }
+      .grid-2 {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 840px) {
+        .grid-2 {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .small {
+        font-size: 13px;
+      }
+      .anchor {
+        opacity: 0;
+        margin-left: 6px;
+        font-weight: 400;
+      }
+      h2:hover .anchor,
+      h3:hover .anchor {
+        opacity: 1;
+      }
+    </style>
+{% endblock %}
+{% block content %}
+{% raw %}
+    <header>
+      <div class="wrap">
+        <div class="badge">Shipy Tutorial</div>
+        <h1>Build a Production-Ready Todo App with Auth in Shipy</h1>
+        <p class="muted">
+          Python + HTMX + SQLite · CSRF · Error handling · systemd + Nginx
+          deploy
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <nav class="toc">
+        <strong>On this page</strong>
+        <ul>
+          <li><a href="#prereqs">Prerequisites</a></li>
+          <li><a href="#quickstart">Copy-Paste Quickstart</a></li>
+          <li><a href="#htmx">How HTMX Works</a></li>
+          <li><a href="#outcome">1. Outcome First</a></li>
+          <li><a href="#scaffold">2. Scaffold</a></li>
+          <li><a href="#db-auth">3. DB &amp; Auth</a></li>
+          <li><a href="#crud">4. CRUD with HTMX</a></li>
+          <li><a href="#csrf">5. CSRF Protection</a></li>
+          <li><a href="#errors">6. Error Handling</a></li>
+          <li><a href="#troubleshooting">Troubleshooting</a></li>
+          <li><a href="#deploy">7. Production Deploy</a></li>
+          <li><a href="#recap">8. Recap &amp; Next Steps</a></li>
+        </ul>
+      </nav>
+
+      <section id="prereqs">
+        <h2>Prerequisites <a class="anchor" href="#prereqs">#</a></h2>
+        <p>Before starting, you should be comfortable with:</p>
+        <ul>
+          <li>
+            <strong>Python 3.11+</strong> — Basic syntax, functions, and imports
+          </li>
+          <li><strong>SQL basics</strong> — SELECT, INSERT, UPDATE, DELETE</li>
+          <li><strong>HTML/CSS</strong> — Basic markup and styling</li>
+          <li><strong>Command line</strong> — Running terminal commands</li>
+          <li><strong>Git</strong> — clone, commit, push</li>
+        </ul>
+        <div class="note">
+          <strong>Don't worry if you're new to:</strong> HTMX (we’ll explain),
+          CSRF protection (we’ll cover the basics), database migrations (we’ll
+          keep it simple).
+        </div>
+      </section>
+
+      <section id="quickstart">
+        <h2>
+          Copy-Paste Quickstart <a class="anchor" href="#quickstart">#</a>
+        </h2>
+        <div class="card">
+          <pre><button class="copy" data-copy="#blk-quickstart">Copy</button><span class="lang">bash</span><code id="blk-quickstart"># 1. Install &amp; scaffold
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install Shipy in the virtual environment
+pip install shipy-web
+
+# Create new project
+shipy new todoapp &amp;&amp; cd todoapp
+
+shipy db init
+
+# 2. Add todos table to data/schema.sql
+# (users table already exists from scaffold)
+
+# 3. Create todos template directory
+mkdir -p app/views/todos
+
+# 4. Update app/main.py with todo routes (see step 4 below)
+
+# 5. Update templates (see step 4 below)
+
+# 6. Run &amp; test
+shipy dev
+
+# Visit http://localhost:8000 → signup → login → add todo → toggle todo
+</code></pre>
+        </div>
+      </section>
+
+      <section id="htmx">
+        <h2>How HTMX Works <a class="anchor" href="#htmx">#</a></h2>
+        <p>
+          <strong>HTMX</strong> lets you add interactivity without a SPA. Your
+          server returns HTML fragments; HTMX swaps them into the page.
+        </p>
+        <div class="card">
+          <pre><span class="lang">flow</span><code>1) User checks a todo → HTMX sends POST
+   POST /todos/1/toggle
+   HX-Request: true
+   HX-Target: #todo-list
+
+2) Server responds with updated HTML
+   &lt;div class="stack"&gt;
+     &lt;div class="card"&gt;
+       &lt;input type="checkbox" checked hx-post="/todos/1/toggle"&gt;
+       &lt;span style="text-decoration: line-through;"&gt;Buy milk&lt;/span&gt;
+     &lt;/div&gt;
+   &lt;/div&gt;
+
+3) HTMX swaps the HTML into #todo-list (no full reload)</code></pre>
+        </div>
+        <p class="small muted">
+          <strong>Note:</strong> For non-GET requests (hx-post / hx-put /
+          hx-delete), HTMX sends <code>application/x-www-form-urlencoded</code>.
+          Include the CSRF token in the body via
+          <code>hx-vals='{"csrf":"{{ csrf }}"}'</code> or an
+          <code>&lt;input name="csrf"&gt;</code>.
+        </p>
+      </section>
+
+      <section id="outcome">
+        <h2>1. Outcome First <a class="anchor" href="#outcome">#</a></h2>
+        <div class="grid-2">
+          <div class="card">
+            <h3>A) First Signup &amp; Login</h3>
+            <pre><span class="lang">screen</span><code>✅ User Registration Complete
+Email: user@example.com
+Password: ********
+Status: Authenticated</code></pre>
+          </div>
+          <div class="card">
+            <h3>B) HTMX Todo Toggle</h3>
+            <p class="muted">
+              Toggle a checkbox, see the item update instantly—no page reload.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="scaffold">
+        <h2>2. Scaffold <a class="anchor" href="#scaffold">#</a></h2>
+        <h3>Generate the app</h3>
+        <pre><button class="copy" data-copy="#blk-scaffold">Copy</button><span class="lang">bash</span><code id="blk-scaffold">shipy new todoapp
+cd todoapp</code></pre>
+
+        <h3>Generated tree (pruned)</h3>
+        <pre><span class="lang">tree</span><code>todoapp/
+├── app/
+│   ├── main.py              # Your routes
+│   └── views/               # Jinja templates
+│       ├── home/index.html
+│       ├── users/new.html
+│       └── sessions/login.html
+├── data/
+│   ├── app.db               # SQLite database (after db init)
+│   └── schema.sql           # Initial schema
+├── public/
+│   └── base.css             # Default styles
+└── .gitignore</code></pre>
+
+        <h3>Initialize database</h3>
+        <pre><button class="copy" data-copy="#blk-dbinit">Copy</button><span class="lang">bash</span><code id="blk-dbinit">shipy db init</code></pre>
+        <p>
+          ✅ <em>Result:</em> Database created with <code>users</code> table.
+        </p>
+      </section>
+
+      <section id="db-auth">
+        <h2>3. DB &amp; Auth <a class="anchor" href="#db-auth">#</a></h2>
+        <h3>Add <code>todos</code> table</h3>
+        <pre><button class="copy" data-copy="#blk-schema">Copy</button><span class="lang">sql</span><code id="blk-schema">-- data/schema.sql
+CREATE TABLE IF NOT EXISTS todos (
+  id INTEGER PRIMARY KEY,
+  title TEXT NOT NULL,
+  done BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_todos_created ON todos(created_at DESC);</code></pre>
+
+        <h3>Apply schema</h3>
+        <pre><button class="copy" data-copy="#blk-dbinit2">Copy</button><span class="lang">bash</span><code id="blk-dbinit2">shipy db init</code></pre>
+        <p>
+          <strong>What it does:</strong> runs SQL in
+          <code>data/schema.sql</code>. For a clean reset, delete
+          <code>data/app.db</code> then rerun <code>shipy db init</code>.
+        </p>
+        <div class="note">
+          <strong>Auth in the scaffold:</strong> password hashing, signed-cookie
+          sessions, CSRF, and login rate limiting are already wired.
+        </div>
+      </section>
+
+      <section id="crud">
+        <h2>4. CRUD with HTMX <a class="anchor" href="#crud">#</a></h2>
+        <h3>Create templates directory</h3>
+        <pre><button class="copy" data-copy="#blk-mkdir">Copy</button><span class="lang">bash</span><code id="blk-mkdir">mkdir -p app/views/todos</code></pre>
+
+        <h3>What you already have (scaffold)</h3>
+        <ul>
+          <li>
+            Imports: <code>render_htmx</code>, <code>is_htmx_request</code>,
+            <code>login_required</code>
+          </li>
+          <li>Middleware with <code>@app.middleware("request")</code></li>
+          <li>Auth routes (signup/login/logout)</li>
+          <li>Basic home route using <code>render_htmx</code></li>
+        </ul>
+        <p>
+          <strong>Middleware?</strong> Code that runs before every request; the
+          scaffold attaches the current user to <code>req.state.user</code> (use
+          <code>get_user_safely(req)</code>).
+        </p>
+        <p class="small muted">
+          Note: <code>@login_required()</code> redirects unauthenticated users
+          to <code>/login</code>.
+        </p>
+
+        <h3>1) Update home route</h3>
+        <pre><button class="copy" data-copy="#blk-home">Copy</button><span class="lang">python</span><code id="blk-home"># app/main.py
+def home(req):
+    user = get_user_safely(req)
+    todos = query("SELECT * FROM todos ORDER BY created_at DESC") if user else []
+    return render_htmx(req, "home/index.html", user=user, todos=todos)</code></pre>
+
+        <h3>2) Add todo routes</h3>
+        <pre><button class="copy" data-copy="#blk-routes">Copy</button><span class="lang">python</span><code id="blk-routes"># app/main.py
+@login_required()
+def todo_list(req):
+    todos = query("SELECT * FROM todos ORDER BY created_at DESC")
+    return render_htmx(req, "todos/list.html", todos=todos)
+
+@login_required()
+async def todo_create(req):
+    await req.load_body()
+    form = Form(req.form).require("title")
+    if not form.ok:
+        return render_htmx(req, "todos/form.html", form=form)
+    with tx():
+        exec("INSERT INTO todos(title, done) VALUES(?, ?)", form["title"], False)
+    todos = query("SELECT * FROM todos ORDER BY created_at DESC")
+    return render_htmx(req, "todos/list.html", todos=todos)
+
+@login_required()
+async def todo_toggle(req):
+    todo_id = req.path_params.get("id")
+    if not todo_id:
+        return Response.text("Todo ID required", 400)
+    with tx():
+        exec("UPDATE todos SET done = NOT done WHERE id = ?", int(todo_id))
+    todos = query("SELECT * FROM todos ORDER BY created_at DESC")
+    return render_htmx(req, "todos/list.html", todos=todos)
+
+@login_required()
+async def todo_update(req):
+    todo_id = req.path_params.get("id")
+    if not todo_id:
+        return Response.text("Todo ID required", 400)
+    await req.load_body()
+    form = Form(req.form).require("title")
+    if not form.ok:
+        return Response.text("Title required", 400)
+    with tx():
+        exec("UPDATE todos SET title = ? WHERE id = ?", form["title"], int(todo_id))
+    todos = query("SELECT * FROM todos ORDER BY created_at DESC")
+    return render_htmx(req, "todos/list.html", todos=todos)
+
+@login_required()
+async def todo_delete(req):
+    todo_id = req.path_params.get("id")
+    if not todo_id:
+        return Response.text("Todo ID required", 400)
+    with tx():
+        exec("DELETE FROM todos WHERE id = ?", int(todo_id))
+    todos = query("SELECT * FROM todos ORDER BY created_at DESC")
+    return render_htmx(req, "todos/list.html", todos=todos)
+
+@login_required()
+def todo_edit_form(req):
+    todo_id = req.path_params.get("id")
+    todo = one("SELECT * FROM todos WHERE id = ?", int(todo_id))
+    if not todo:
+        return Response.text("Todo not found", 404)
+    return render_htmx(req, "todos/edit.html", todo=todo)</code></pre>
+
+        <h3>3) Register routes</h3>
+        <pre><button class="copy" data-copy="#blk-register">Copy</button><span class="lang">python</span><code id="blk-register"># app/main.py (end of file)
+app.get("/todos", todo_list)
+app.post("/todos", todo_create)
+app.post("/todos/{id}/toggle", todo_toggle)
+app.put("/todos/{id}", todo_update)
+app.delete("/todos/{id}", todo_delete)
+app.get("/todos/{id}/edit", todo_edit_form)</code></pre>
+
+        <h3>Template updates</h3>
+        <p><strong>Update home:</strong></p>
+        <pre><button class="copy" data-copy="#blk-home-html">Copy</button><span class="lang">html</span><code id="blk-home-html">&lt;!-- app/views/home/index.html (inside the {% if user %} block) --&gt;
+&lt;div class="card"&gt;
+  &lt;h2&gt;My Todos&lt;/h2&gt;
+  {% include "todos/form.html" %}
+  &lt;div id="todo-list"&gt;{% include "todos/list.html" %}&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+        <p><strong>Create list partial:</strong></p>
+        <pre><button class="copy" data-copy="#blk-list">Copy</button><span class="lang">html</span><code id="blk-list">&lt;!-- app/views/todos/list.html --&gt;
+{% if todos %}
+&lt;div class="stack"&gt;
+  {% for todo in todos %}
+  &lt;div class="card" style="display:flex;align-items:center;gap:10px;"&gt;
+    &lt;input type="checkbox"
+           {% if todo.done %}checked{% endif %}
+           hx-post="/todos/{{ todo.id }}/toggle"
+           hx-target="#todo-list"
+           hx-swap="innerHTML"
+           hx-vals='{"csrf":"{{ csrf }}"}' /&gt;
+    &lt;span style="flex:1;cursor:pointer; {% if todo.done %}text-decoration:line-through;opacity:.6;{% endif %}"
+          hx-get="/todos/{{ todo.id }}/edit"
+          hx-target="this"
+          hx-swap="outerHTML"&gt;
+      {{ todo.title }}
+    &lt;/span&gt;
+    &lt;button class="btn"
+            style="background:#dc2626;padding:4px 8px;font-size:12px;"
+            hx-delete="/todos/{{ todo.id }}"
+            hx-target="#todo-list"
+            hx-swap="innerHTML"
+            hx-confirm="Delete this todo?"
+            hx-vals='{"csrf":"{{ csrf }}"}'&gt;Delete&lt;/button&gt;
+  &lt;/div&gt;
+  {% endfor %}
+&lt;/div&gt;
+{% else %}
+&lt;div class="muted"&gt;No todos yet. Add one above!&lt;/div&gt;
+{% endif %}</code></pre>
+
+        <p><strong>Create form partial:</strong></p>
+        <pre><button class="copy" data-copy="#blk-form">Copy</button><span class="lang">html</span><code id="blk-form">&lt;!-- app/views/todos/form.html --&gt;
+&lt;form hx-post="/todos" hx-target="#todo-list" hx-swap="innerHTML" class="stack"&gt;
+  &lt;input type="hidden" name="csrf" value="{{ csrf }}" /&gt;
+  &lt;div style="display:flex;gap:10px;"&gt;
+    &lt;input class="input" name="title" placeholder="New todo..." value="{{ form.title if form else '' }}" style="flex:1;" /&gt;
+    &lt;button class="btn" type="submit"&gt;Add&lt;/button&gt;
+  &lt;/div&gt;
+  {% if form and form.errors.title %}
+  &lt;div class="error"&gt;{{ form.errors.title[0] }}&lt;/div&gt;
+  {% endif %}
+&lt;/form&gt;</code></pre>
+
+        <p><strong>Create edit partial:</strong></p>
+        <pre><button class="copy" data-copy="#blk-edit">Copy</button><span class="lang">html</span><code id="blk-edit">&lt;!-- app/views/todos/edit.html --&gt;
+&lt;span hx-get="/todos" hx-target="#todo-list" hx-swap="innerHTML"
+      hx-trigger="keyup[key=='Escape'] from:body once"
+      style="flex:1;display:flex;"&gt;
+  &lt;input type="text" name="title" value="{{ todo.title }}"
+         hx-put="/todos/{{ todo.id }}"
+         hx-vals='{"csrf":"{{ csrf }}"}'
+         hx-trigger="keyup[key=='Enter'] once, blur changed once"
+         hx-target="#todo-list" hx-swap="innerHTML"
+         style="flex:1;border:1px solid #ccc;padding:4px;" autofocus /&gt;
+&lt;/span&gt;</code></pre>
+
+        <p>
+          ✅ <em>Result:</em> Full CRUD with HTMX—add, toggle, edit, delete
+          without reload.
+        </p>
+      </section>
+
+      <section id="csrf">
+        <h2>5. CSRF Protection <a class="anchor" href="#csrf">#</a></h2>
+        <p>
+          <strong>CSRF</strong> prevents malicious sites from making requests as
+          your logged-in users.
+        </p>
+        <ul>
+          <li>Token is generated per session (signed cookie).</li>
+          <li>Available as <code>{{ csrf }}</code> in templates.</li>
+          <li>
+            Required for POST/PUT/DELETE. Include it in the request body as
+            <code>name="csrf"</code>.
+          </li>
+        </ul>
+        <div class="grid-2">
+          <div class="card">
+            <h3 class="err">❌ Failing example (no CSRF)</h3>
+            <pre><span class="lang">html</span><code>&lt;form method="post" action="/todos"&gt;
+  &lt;input name="title" placeholder="New todo" /&gt;
+  &lt;button&gt;Add&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+          </div>
+          <div class="card">
+            <h3 class="ok">✅ Fixed version</h3>
+            <pre><span class="lang">html</span><code>&lt;form method="post" action="/todos"&gt;
+  &lt;input type="hidden" name="csrf" value="{{ csrf }}" /&gt;
+  &lt;input name="title" placeholder="New todo" /&gt;
+  &lt;button&gt;Add&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="errors">
+        <h2>6. Error Handling <a class="anchor" href="#errors">#</a></h2>
+        <ul>
+          <li>DEBUG: full stack trace</li>
+          <li>Production: clean message + proper status codes</li>
+        </ul>
+        <h3>Test error page</h3>
+        <pre><button class="copy" data-copy="#blk-error">Copy</button><span class="lang">python</span><code id="blk-error">def error_test(req):
+    raise Exception("This is a test error")
+    return Response.text("This won't be reached")
+
+app.get("/error", error_test)</code></pre>
+        <p>
+          Open <code>http://localhost:8000/error</code> to see it in action.
+        </p>
+      </section>
+
+      <section id="troubleshooting">
+        <h2>Troubleshooting <a class="anchor" href="#troubleshooting">#</a></h2>
+        <div class="stack">
+          <div class="card">
+            <pre><span class="lang">issue</span><code>🚫 "shipy: command not found"</code></pre>
+            <p>
+              <strong>Fix:</strong> activate your venv (Linux/Mac
+              <kbd>source .venv/bin/activate</kbd>; Windows
+              <kbd>.venv\Scripts\activate</kbd>) and
+              <code>pip install shipy-web</code>.
+            </p>
+          </div>
+          <div class="card">
+            <pre><span class="lang">issue</span><code>🚫 403 Forbidden</code></pre>
+            <p>
+              <strong>Fix:</strong> include CSRF:
+              <code
+                >&lt;input type="hidden" name="csrf" value="{{ csrf
+                }}"&gt;</code
+              >
+              or <code>hx-vals='{"csrf":"{{ csrf }}"}'</code>.
+            </p>
+          </div>
+          <div class="card">
+            <pre><span class="lang">issue</span><code>🚫 404 on /todos routes</code></pre>
+            <p>
+              <strong>Fix:</strong> ensure you registered the routes from Step
+              4.
+            </p>
+          </div>
+          <div class="card">
+            <pre><span class="lang">issue</span><code>🚫 Template not found</code></pre>
+            <p>
+              <strong>Fix:</strong> create <code>todos/list.html</code>,
+              <code>todos/form.html</code>, <code>todos/edit.html</code>.
+            </p>
+          </div>
+          <div class="card">
+            <pre><span class="lang">issue</span><code>🚫 DB issues</code></pre>
+            <p>
+              <strong>Fix:</strong> run <code>shipy db init</code> after editing
+              <code>schema.sql</code>.
+            </p>
+          </div>
+          <div class="card">
+            <pre><span class="lang">issue</span><code>🚫 AttributeError: ... .user</code></pre>
+            <p>
+              <strong>Fix:</strong> use <code>get_user_safely(req)</code> rather
+              than accessing <code>req.state.user</code> directly.
+            </p>
+          </div>
+        </div>
+        <h3>Debugging tips</h3>
+        <ul>
+          <li>Check the terminal for tracebacks.</li>
+          <li>Use Network tab in devtools.</li>
+          <li>Verify template paths.</li>
+          <li>Build incrementally (auth → todos).</li>
+        </ul>
+      </section>
+
+      <section id="deploy">
+        <h2>7. Production Deploy <a class="anchor" href="#deploy">#</a></h2>
+        <h3>Generate deploy files</h3>
+        <pre><button class="copy" data-copy="#blk-emit">Copy</button><span class="lang">bash</span><code id="blk-emit">shipy deploy emit --domain yourdomain.com</code></pre>
+
+        <h3>Generate secret</h3>
+        <pre><button class="copy" data-copy="#blk-secret">Copy</button><span class="lang">bash</span><code id="blk-secret">shipy gensecret
+# export as SHIPY_SECRET</code></pre>
+
+        <h3>systemd service</h3>
+        <pre><span class="lang">ini</span><code>[Unit]
+Description=Shipy app todoapp
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/user/todoapp
+Environment=SHIPY_BASE=/home/user/todoapp
+Environment=SHIPY_DEBUG=0
+Environment=SHIPY_SECRET=your-secret-key-here
+ExecStart=/usr/bin/env uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2
+Restart=always
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+
+        <h3>Nginx vhost</h3>
+        <pre><span class="lang">nginx</span><code>server {
+  listen 80;
+  server_name yourdomain.com;
+
+  root /home/user/todoapp/public;
+
+  location /public/ {
+    try_files $uri =404;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+  }
+
+  location / {
+    proxy_pass http://127.0.0.1:8000;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_redirect off;
+  }
+}</code></pre>
+
+        <h3>Deploy</h3>
+        <pre><button class="copy" data-copy="#blk-deploy">Copy</button><span class="lang">bash</span><code id="blk-deploy">sudo cp deploy/*.service /etc/systemd/system/
+sudo systemctl enable --now todoapp.service
+sudo cp deploy/yourdomain.com.conf /etc/nginx/sites-available/
+sudo ln -sf /etc/nginx/sites-available/yourdomain.com.conf /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx</code></pre>
+
+        <h3>Environment</h3>
+        <ul>
+          <li><code>SHIPY_DEBUG=0</code> — production mode</li>
+          <li><code>SHIPY_SECRET</code> — cookie signing secret</li>
+          <li><code>SHIPY_BASE</code> — app root</li>
+        </ul>
+
+        <p>✅ <em>Result:</em> Production-ready deploy with systemd + Nginx.</p>
+      </section>
+
+      <section id="recap">
+        <h2>8. Recap &amp; Next Steps <a class="anchor" href="#recap">#</a></h2>
+        <ul>
+          <li>✅ Auth with sessions</li>
+          <li>✅ Protected todo CRUD with HTMX</li>
+          <li>✅ CSRF protection</li>
+          <li>✅ Deploy config</li>
+        </ul>
+
+        <h3>Extensions</h3>
+        <h4>1) Pagination</h4>
+        <pre><span class="lang">python</span><code>def todos_paginated(req):
+    page = int(req.query.get("page", 1))
+    per_page = 10
+    offset = (page - 1) * per_page
+    todos = query("SELECT * FROM todos ORDER BY created_at DESC LIMIT ? OFFSET ?", per_page, offset)
+    total = one("SELECT COUNT(*) as count FROM todos")["count"]
+    return render_htmx(req, "todos/paginated.html", todos=todos, page=page, total=total, per_page=per_page)</code></pre>
+
+        <h4>2) Full-Text Search (FTS5)</h4>
+        <pre><span class="lang">sql</span><code>CREATE VIRTUAL TABLE todos_fts USING fts5(title, content=todos);
+CREATE TRIGGER todos_ai AFTER INSERT ON todos BEGIN
+  INSERT INTO todos_fts(rowid, title) VALUES (new.id, new.title);
+END;
+CREATE TRIGGER todos_au AFTER UPDATE ON todos BEGIN
+  DELETE FROM todos_fts WHERE rowid = old.id;
+  INSERT INTO todos_fts(rowid, title) VALUES (new.id, new.title);
+END;
+CREATE TRIGGER todos_ad AFTER DELETE ON todos BEGIN
+  DELETE FROM todos_fts WHERE rowid = old.id;
+END;
+SELECT t.* FROM todos t
+JOIN todos_fts fts ON t.id = fts.rowid
+WHERE todos_fts MATCH ?
+ORDER BY bm25(todos_fts);</code></pre>
+
+        <h4>3) User-Scoped Todos</h4>
+        <pre><span class="lang">sql</span><code>ALTER TABLE todos ADD COLUMN user_id INTEGER;
+CREATE INDEX IF NOT EXISTS idx_todos_user_created ON todos(user_id, created_at DESC);</code></pre>
+        <pre><span class="lang">python</span><code>@login_required()
+async def todo_create(req):
+    await req.load_body()
+    form = Form(req.form).require("title")
+    if not form.ok:
+        return render_htmx(req, "todos/form.html", form=form)
+    user_id = req.state.user["id"]
+    with tx():
+        exec("INSERT INTO todos(title, done, user_id) VALUES(?, ?, ?)", form["title"], False, user_id)
+
+@login_required()
+def todo_list(req):
+    user_id = req.state.user["id"]
+    todos = query("SELECT * FROM todos WHERE user_id = ? ORDER BY created_at DESC", user_id)
+    return render_htmx(req, "todos/list.html", todos=todos)</code></pre>
+
+        <p>
+          <strong>Shipy Philosophy delivered:</strong> no build step,
+          server-rendered HTML, explicit SQL, signed-cookie sessions, HTMX
+          interactivity, production-ready deploy.
+        </p>
+        <p><em>You shipped a working todo app in under 30 minutes!</em></p>
+      </section>
+    </main>
+{% endraw %}
+{% endblock %}
+{% block scripts %}
+    <script>
+      // Copy buttons
+      document.querySelectorAll(".copy").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-copy");
+          const el = document.querySelector(id);
+          if (!el) return;
+          const text = el.textContent;
+          navigator.clipboard.writeText(text).then(() => {
+            const old = btn.textContent;
+            btn.textContent = "Copied";
+            setTimeout(() => (btn.textContent = old), 1200);
+          });
+        });
+      });
+    </script>
+{% endblock %}
